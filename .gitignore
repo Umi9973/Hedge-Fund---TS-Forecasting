@@ -1,0 +1,20 @@
+# Data files — too large for git
+*.parquet
+*.zip
+
+# Submissions
+submissions/
+
+# EDA outputs (plots + csvs)
+*.png
+eda_outputs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
