@@ -11,8 +11,8 @@ import pandas as pd
 import numpy as np
 
 PROJECT_DIR = "G:/Umi/Python Projects/TS Forecast"
-TRAIN_PATH  = f"{PROJECT_DIR}/train.parquet"
-TEST_PATH   = f"{PROJECT_DIR}/test.parquet"
+TRAIN_PATH  = f"{PROJECT_DIR}/data/raw/train.parquet"
+TEST_PATH   = f"{PROJECT_DIR}/data/raw/test.parquet"
 VAL_SPLIT   = 3500
 
 # ============================================================

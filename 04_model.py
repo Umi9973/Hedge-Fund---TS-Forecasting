@@ -35,7 +35,7 @@ SEEDS     = [42, 2024, 777]
 # ── Overfitting controls ──────────────────────────────────────
 # Set True to compress skewed weights — prevents model obsessing
 # over a tiny number of extreme-weight rows
-USE_LOG_WEIGHT = True
+USE_LOG_WEIGHT = False
 
 # Features with near-zero IC (Spearman ~0.0002) — pure noise
 # Dropping them removes dimensions the model could overfit on
@@ -149,8 +149,10 @@ for horizon in HORIZONS:
     # Apply log weight transform if enabled
     if USE_LOG_WEIGHT:
         w_train = np.log1p(w_train_raw)
+        w_val_es = np.log1p(w_val)   # log weights for early stopping (raw weights cause premature stop)
     else:
-        w_train = w_train_raw
+        w_train  = w_train_raw
+        w_val_es = w_val
 
     print(f"  Train: {X_train.shape} | Val: {X_val.shape} | Test: {X_test.shape}")
     if USE_LOG_WEIGHT:
@@ -176,7 +178,7 @@ for horizon in HORIZONS:
             X_train, y_train,
             sample_weight=w_train,
             eval_set=[(X_train, y_train), (X_val, y_val)],
-            eval_sample_weight=[w_train, w_val],
+            eval_sample_weight=[w_train, w_val_es],
             eval_names=['train', 'val'],
             callbacks=[
                 lgb.early_stopping(es, verbose=False),
@@ -203,7 +205,7 @@ for horizon in HORIZONS:
     learning_curves[horizon] = {'train': lc_train, 'val': lc_val}
 
     # ── Overfitting diagnostic ─────────────────────────────────
-    train_score = skill_score(y_train.values, train_preds, w_val[:len(y_train)] if USE_LOG_WEIGHT else w_train_raw)
+    train_score = skill_score(y_train.values, train_preds, w_train_raw)
     val_score   = skill_score(y_val.values,   val_preds,   w_val)
     gap         = train_score - val_score
 
@@ -213,7 +215,7 @@ for horizon in HORIZONS:
     print(f"  Best iters     : {best_iters} → refit with {avg_iter}")
     print(f"  Train Score    : {train_score:.4f}")
     print(f"  Val Score      : {val_score:.4f}")
-    print(f"  Gap (train-val): {gap:.4f}  {'⚠ possible overfit' if gap > 0.05 else '✓ healthy'}")
+    print(f"  Gap (train-val): {gap:.4f}  {'! possible overfit' if gap > 0.05 else 'OK healthy'}")
 
     cv_y.extend(y_val.values)
     cv_p.extend(val_preds)

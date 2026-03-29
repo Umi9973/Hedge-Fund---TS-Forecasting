@@ -185,19 +185,19 @@ for feat in cs_features:
         continue
 
     # Z-score: how does this instrument compare to ALL others right now?
-    # Removes the market-wide level effect
-    ts_grp = df.groupby('ts_index')[feat]
+    # Removes the market-wide level effect — per (ts_index, horizon)
+    ts_grp = df.groupby(['ts_index', 'horizon'])[feat]
     cs_mean = ts_grp.transform('mean')
     cs_std  = ts_grp.transform('std').fillna(1).replace(0, 1)
     df[f'{feat}_cs_z'] = (df[feat] - cs_mean) / cs_std
 
     # Rank percentile: outlier-robust version of z-score
     # 0.0 = lowest instrument, 1.0 = highest instrument at this timestamp
-    df[f'{feat}_cs_rank'] = df.groupby('ts_index')[feat].rank(pct=True)
+    df[f'{feat}_cs_rank'] = df.groupby(['ts_index', 'horizon'])[feat].rank(pct=True)
 
-    # Group z-score: compare within (ts_index, sub_category) peer group
+    # Group z-score: compare within (ts_index, horizon, sub_category) peer group
     # An instrument may look extreme vs market but normal within its category
-    g_grp  = df.groupby(['ts_index', 'sub_category'])[feat]
+    g_grp  = df.groupby(['ts_index', 'horizon', 'sub_category'])[feat]
     g_mean = g_grp.transform('mean')
     g_std  = g_grp.transform('std').fillna(1).replace(0, 1)
     df[f'{feat}_grp_z'] = (df[feat] - g_mean) / g_std

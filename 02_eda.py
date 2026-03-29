@@ -165,7 +165,7 @@ print("  Saved: eda_weight.png")
 print("\n--- 4. Null Patterns ---")
 
 # Are null rows the same rows across features?
-raw_train = pd.read_parquet(f"{PROJECT_DIR}/train.parquet")
+raw_train = pd.read_parquet(f"{PROJECT_DIR}/data/raw/train.parquet")
 null_mask  = raw_train[feature_cols].isnull()
 null_counts_per_row = null_mask.sum(axis=1)
 
@@ -274,7 +274,7 @@ pd.DataFrame(target_stats).to_csv(f"{EDA_DIR}/eda_target_stats_by_horizon.csv", 
 print("  Saved: eda_target_stats_by_horizon.csv")
 
 # 5. Null counts per feature (from raw train)
-raw_null = pd.read_parquet(f"{PROJECT_DIR}/train.parquet")[feature_cols].isnull().sum()
+raw_null = pd.read_parquet(f"{PROJECT_DIR}/data/raw/train.parquet")[feature_cols].isnull().sum()
 null_df = pd.DataFrame({
     'feature':     raw_null.index,
     'null_count':  raw_null.values,
