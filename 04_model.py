@@ -53,22 +53,20 @@ DROP_COLS = [
 # Tighter regularization than baseline to reduce overfitting
 # Short horizons are noisier → more regularization
 # Long horizons have more structure → slightly looser
+# Optuna-tuned params (30 trials per horizon, 2026-03-29)
 HORIZON_PARAMS = {
-    1:  {'num_leaves': 50,  'min_child_samples': 400, 'lambda_l2': 20.0, 'max_depth': 7, 'early_stopping': 150},
-    3:  {'num_leaves': 55,  'min_child_samples': 350, 'lambda_l2': 18.0, 'max_depth': 7, 'early_stopping': 140},
-    10: {'num_leaves': 63,  'min_child_samples': 280, 'lambda_l2': 14.0, 'max_depth': 8, 'early_stopping': 130},
-    25: {'num_leaves': 70,  'min_child_samples': 220, 'lambda_l2': 11.0, 'max_depth': 8, 'early_stopping': 120},
+    1:  {'num_leaves': 20,  'min_child_samples': 59,  'lambda_l2': 1.058,  'max_depth': 9,  'learning_rate': 0.04407, 'feature_fraction': 0.622, 'bagging_fraction': 0.309, 'early_stopping': 295},
+    3:  {'num_leaves': 33,  'min_child_samples': 300, 'lambda_l2': 21.435, 'max_depth': 10, 'learning_rate': 0.03794, 'feature_fraction': 0.718, 'bagging_fraction': 0.745, 'early_stopping': 237},
+    10: {'num_leaves': 93,  'min_child_samples': 469, 'lambda_l2': 9.232,  'max_depth': 9,  'learning_rate': 0.00698, 'feature_fraction': 0.490, 'bagging_fraction': 0.859, 'early_stopping': 145},
+    25: {'num_leaves': 120, 'min_child_samples': 392, 'lambda_l2': 6.810,  'max_depth': 9,  'learning_rate': 0.00519, 'feature_fraction': 0.737, 'bagging_fraction': 0.599, 'early_stopping': 192},
 }
 
 BASE_PARAMS = {
     'objective':        'regression',
     'metric':           'rmse',
-    'learning_rate':    0.02,
     'n_estimators':     3000,
-    'feature_fraction': 0.5,   # was 0.6 — see fewer features per tree
-    'bagging_fraction': 0.6,   # was 0.7 — see fewer rows per tree
     'bagging_freq':     5,
-    'lambda_l1':        0.5,   # was 0.1 — stronger L1
+    'lambda_l1':        0.5,
     'verbosity':        -1,
     'n_jobs':           -1,
 }

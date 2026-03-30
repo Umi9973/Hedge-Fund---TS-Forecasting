@@ -5,6 +5,17 @@
 # Submissions
 submissions/
 
+# Experiment output CSVs and binaries (large, regenerable)
+h3_experiment_submission/
+h10_experiment_submission/
+h25_experiment_submission/
+autoencoder_results/*.csv
+autoencoder_results/*.pt
+autoencoder_results/*.npy
+
+# Optuna binary study objects (keep best_params.json)
+optuna_results/*.pkl
+
 # EDA outputs (plots + csvs)
 *.png
 eda_outputs/

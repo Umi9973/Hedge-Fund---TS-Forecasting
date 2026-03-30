@@ -1,0 +1,8 @@
+Supervised Autoencoder + MLP ¡ª h=3
+====================================
+Best val score   : 0.1118
+LightGBM baseline: 0.1103
+Delta            : +0.0015
+Best epoch       : 35
+Runtime          : 31.9 min
+Device           : NVIDIA GeForce RTX 3060
