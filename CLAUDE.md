@@ -57,6 +57,12 @@
 - `02_eda.py` — EDA plots + CSV outputs → `eda_outputs/`
 - `03_feature_engineering.py` — 344 total columns → `train_features.parquet`, `test_features.parquet`
 - `04_model.py` — LightGBM per horizon, 3-seed ensemble, full refit → `submissions/`
+- `05_h3_experiment.py` — h=3 single-horizon experiments (clipping, market features, era boosting — all failed)
+- `06_rank_normalize.py` — rank normalization post-processing test (incompatible with metric, CV→0)
+- `07_h25_experiment.py` — h=10/h=25 feature experiments (market-wide, sub_code categorical — all failed)
+- `08_optuna_tune.py` — Bayesian HPO with Optuna, 30 trials per horizon → `optuna_results/best_params.json`
+- `09_autoencoder_h3.py` — Supervised Autoencoder + MLP on h=3, GPU cuda:1 → `autoencoder_results/`
+- `10_blend_h3.py` — Blend LightGBM + NN predictions, search over 21 alpha ratios → best blend saved
 
 ## Engineered Features (328 model features after dropping low-IC)
 - Raw (78): original features minus 8 low-IC dropped ones
@@ -73,14 +79,46 @@
 - CS features were grouped by `ts_index` only (mixing horizons) — fixed to `(ts_index, horizon)`
 - Raw data paths pointed to project root — fixed to `data/raw/`
 
+## Optuna-Tuned HORIZON_PARAMS (in 04_model.py)
+```python
+HORIZON_PARAMS = {
+    1:  {'num_leaves': 20,  'min_child_samples': 59,  'lambda_l2': 1.058,  'max_depth': 9,  'learning_rate': 0.04407, 'feature_fraction': 0.622, 'bagging_fraction': 0.309, 'early_stopping': 295},
+    3:  {'num_leaves': 33,  'min_child_samples': 300, 'lambda_l2': 21.435, 'max_depth': 10, 'learning_rate': 0.03794, 'feature_fraction': 0.718, 'bagging_fraction': 0.745, 'early_stopping': 237},
+    10: {'num_leaves': 93,  'min_child_samples': 469, 'lambda_l2': 9.232,  'max_depth': 9,  'learning_rate': 0.00698, 'feature_fraction': 0.490, 'bagging_fraction': 0.859, 'early_stopping': 145},
+    25: {'num_leaves': 120, 'min_child_samples': 392, 'lambda_l2': 6.810,  'max_depth': 9,  'learning_rate': 0.00519, 'feature_fraction': 0.737, 'bagging_fraction': 0.599, 'early_stopping': 192},
+}
+```
+- h=10 hit 3000 tree limit (best_iter=2996) — needs n_estimators=5000 in next Optuna run
+
+## Supervised Autoencoder (09_autoencoder_h3.py)
+- Architecture: Input(328) → Encoder(256→128→32) → Bottleneck → Decoder(128→256→328) + concat(Bottleneck, Input) → MLP(256→128→1)
+- Loss: weighted_pred_loss + 0.1 * recon_loss + 1e-4 * L2_pred_penalty
+- Scheduler: ReduceLROnPlateau(mode=max, factor=0.5, patience=5) — NO cosine restarts (cause score collapse)
+- Best val score: **0.1118** (baseline LightGBM h=3: 0.1103)
+- Output: `autoencoder_results/`
+
+## Blend Results (10_blend_h3.py)
+- Best blend: **alpha=0.55 (55% NN + 45% LightGBM) → val score 0.1192**
+- LightGBM alone: 0.1095 | NN alone: 0.1118 | Blend: 0.1192 (+0.0097)
+
+## Failed Experiments (do not retry)
+- **Rank normalization**: spreads predictions away from zero → high-weight y=0 rows → CV=0
+- **Era boosting**: retrains on "worst dates" which have high-weight y=0 rows → same collapse
+- **Log weights**: USE_LOG_WEIGHT must be False — log transform causes CV=0
+- **Market-wide aggregates**: redundant with existing CS z-scores, hurt all horizons
+- **Sub_code as categorical**: instrument-specific splits overfit, hurt all horizons
+- **Feature group statistics**: row-level mean/std/skew across feature families — noise
+
 ## Submissions
 | Date | CV Score | Public LB | Rank | Notes |
 |------|----------|-----------|------|-------|
 | 2026-03-25 | 0.2439 | 0.2437 | 326/1035 | Baseline LightGBM, 3-seed ensemble |
-| 2026-03-28 | 0.2403 | pending | — | Fixed pipeline, CS per-horizon grouping |
+| 2026-03-28 | 0.2403 | — | — | Fixed pipeline, CS per-horizon grouping |
+| 2026-03-28 | 0.2474 | 0.2438 | ~300/1035 | Optuna-tuned LightGBM all 4 horizons |
 
 ## Next Steps
-- Submit 2026-03-28 run (CV 0.2403) and check LB
-- Hyperparameter tuning with Optuna (start with horizon=3, highest weight)
-- Ensemble with XGBoost / CatBoost for diversity
-- Dedicated sub-model for high-weight val instruments
+- **Build full submission with h=3 blend**: replace h=3 preds in cv0.2474 submission with alpha=0.55 blend
+- **Tonight Optuna run**: n_estimators=5000 for h=10 (hit 3000 limit), 50 trials per horizon
+- **Extend NN to all horizons**: train autoencoder on h=1/10/25, blend each
+- **CatBoost as ensemble member**: not yet tried, good diversity from LightGBM
+- **SHAP-guided feature interaction pairs**: identify top feature pairs from SHAP values
