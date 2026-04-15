@@ -2,7 +2,6 @@
 
 ---
 
-## 2026-03-25
 
 ### Baseline Submission
 - Built full ML pipeline from scratch: preprocessing → EDA → feature engineering → LightGBM model
@@ -17,7 +16,6 @@
 
 ---
 
-## 2026-03-26 — 2026-03-27
 
 ### EDA & Feature IC Analysis
 - Computed Spearman IC for all 82 raw features
@@ -36,7 +34,7 @@
 
 ---
 
-## 2026-03-27 — Feature Engineering Experiments
+## Feature Engineering Experiments
 
 ### Failed Experiment: Market-Wide Aggregates
 - Added per `(ts_index, horizon)` mean/std for top-10 IC features + idiosyncratic deviation
@@ -54,7 +52,7 @@
 
 ---
 
-## 2026-03-28 — Optuna Hyperparameter Tuning
+## Optuna Hyperparameter Tuning
 
 ### 08_optuna_tune.py
 - 30 Bayesian TPE trials per horizon, single seed per trial for speed
@@ -71,7 +69,7 @@
 
 ---
 
-## 2026-03-29 — Neural Network Experiments
+## Neural Network Experiments
 
 ### Disk Space Issue (Resolved)
 - PyTorch 2.6 (2.5GB download) failed on C drive (OSError: no space left)
@@ -111,7 +109,7 @@
 
 ---
 
-## 2026-03-30 — All-Horizon NN + Blend Experiments
+## All-Horizon NN + Blend Experiments
 
 ### All-Horizon Supervised Autoencoder (11_autoencoder_all_horizons.py)
 - Extended h=3 autoencoder to all 4 horizons with horizon-specific hyperparameters
@@ -141,7 +139,7 @@
 
 ---
 
-## 2026-03-30 — CatBoost Standalone Models
+## CatBoost Standalone Models
 
 ### Motivation
 - LightGBM GPU broken; CatBoost GPU works natively (`task_type='GPU'`)
@@ -180,7 +178,7 @@
 
 ---
 
-## 2026-03-31 — Walk-Forward CV + Submissions
+## Walk-Forward CV + Submissions
 
 ### Walk-Forward CV (19–22_wfcv_h*.py)
 - Implemented 4-fold walk-forward CV for all horizons
