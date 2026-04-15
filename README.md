@@ -2,7 +2,7 @@
 
 Kaggle competition: predict financial instrument returns across 4 horizons (h=1, 3, 10, 25).
 
-**Best Public LB: 0.2438** (~rank 300/1035)
+**Best Public LB: 0.2438**
 
 **Metric:** `Skill Score = sqrt(1 - clip(Σw(y-ŷ)² / Σwy², 0, 1))`
 > High-weight rows have `y_target=0` — any non-zero prediction on these rows destroys the score.
