@@ -2,24 +2,22 @@
 *.parquet
 *.zip
 
-# Submissions folder (scripts moved here, but output CSVs ignored)
-submissions/*.csv
+# Submissions folder (scripts kept, output CSVs ignored)
+5_submissions/*.csv
 
-# Experiment output CSVs, binaries, plots (large, regenerable)
+# Experiment output dirs (large, regenerable)
 h3_experiment_submission/
 h10_experiment_submission/
 h25_experiment_submission/
-autoencoder_results/
-dart_results/
-multitask_results/
+4_results/autoencoder_results/
+4_results/dart_results/
+4_results/multitask_results/
+4_results/predictions/
+4_results/plots/
 catboost_info/
 
-# Prediction outputs
-predictions/
-plots/
-
 # Optuna binary study objects (keep best_params.json)
-optuna_results/*.pkl
+4_results/optuna_results/*.pkl
 
 # Python cache
 __pycache__/
