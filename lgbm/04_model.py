@@ -57,7 +57,7 @@ DROP_COLS = [
 HORIZON_PARAMS = {
     1:  {'num_leaves': 20,  'min_child_samples': 59,  'lambda_l2': 1.058,  'max_depth': 9,  'learning_rate': 0.04407, 'feature_fraction': 0.622, 'bagging_fraction': 0.309, 'early_stopping': 295},
     3:  {'num_leaves': 33,  'min_child_samples': 300, 'lambda_l2': 21.435, 'max_depth': 10, 'learning_rate': 0.03794, 'feature_fraction': 0.718, 'bagging_fraction': 0.745, 'early_stopping': 237},
-    10: {'num_leaves': 93,  'min_child_samples': 469, 'lambda_l2': 9.232,  'max_depth': 9,  'learning_rate': 0.00698, 'feature_fraction': 0.490, 'bagging_fraction': 0.859, 'early_stopping': 145},
+    10: {'num_leaves': 93,  'min_child_samples': 469, 'lambda_l2': 9.232,  'max_depth': 9,  'learning_rate': 0.00698, 'feature_fraction': 0.490, 'bagging_fraction': 0.859, 'early_stopping': 300},
     25: {'num_leaves': 120, 'min_child_samples': 392, 'lambda_l2': 6.810,  'max_depth': 9,  'learning_rate': 0.00519, 'feature_fraction': 0.737, 'bagging_fraction': 0.599, 'early_stopping': 192},
 }
 

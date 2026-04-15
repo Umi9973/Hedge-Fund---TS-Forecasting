@@ -2,23 +2,24 @@
 *.parquet
 *.zip
 
-# Submissions
-submissions/
+# Submissions folder (scripts moved here, but output CSVs ignored)
+submissions/*.csv
 
-# Experiment output CSVs and binaries (large, regenerable)
+# Experiment output CSVs, binaries, plots (large, regenerable)
 h3_experiment_submission/
 h10_experiment_submission/
 h25_experiment_submission/
-autoencoder_results/*.csv
-autoencoder_results/*.pt
-autoencoder_results/*.npy
+autoencoder_results/
+dart_results/
+multitask_results/
+catboost_info/
+
+# Prediction outputs
+predictions/
+plots/
 
 # Optuna binary study objects (keep best_params.json)
 optuna_results/*.pkl
-
-# EDA outputs (plots + csvs)
-*.png
-eda_outputs/
 
 # Python cache
 __pycache__/
@@ -29,3 +30,10 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local-only MD files
+CLAUDE.md
+concern.md
+Ubiquant_report.md
+report.md
+competition_rules.txt
